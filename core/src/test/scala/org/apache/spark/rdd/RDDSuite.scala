@@ -380,6 +380,26 @@ class RDDSuite extends FunSuite with SharedSparkContext {
     for (i <- 0 until sample.size) assert(sample(i) === checkSample(i))
   }
 
+  test("toIterable") {
+    var nums = sc.makeRDD(Range(1, 1000), 100)
+    assert(nums.toIterable(prefetchPartitions = 10).size === 999)
+    assert(nums.toIterable().toArray === (1 to 999).toArray)
+
+    nums = sc.makeRDD(Range(1000, 1, -1), 100)
+    assert(nums.toIterable(prefetchPartitions = 10).size === 999)
+    assert(nums.toIterable(prefetchPartitions = 10).toArray === Range(1000, 1, -1).toArray)
+
+    nums = sc.makeRDD(Range(1, 100), 1000)
+    assert(nums.toIterable(prefetchPartitions = 10).size === 99)
+    assert(nums.toIterable(prefetchPartitions = 10).toArray === Range(1, 100).toArray)
+
+    nums = sc.makeRDD(Range(1, 1000), 100)
+    assert(nums.toIterable(prefetchPartitions = -1).size === 999)
+    assert(nums.toIterable().toArray === (1 to 999).toArray)
+  }
+
+
+
   test("take") {
     var nums = sc.makeRDD(Range(1, 1000), 1)
     assert(nums.take(0).size === 0)
