@@ -16,7 +16,6 @@ import org.apache.spark.rdd.RDDiterator._
  * @param prefetchPartitions    The number of partitions to prefetch.
  *                              If <1 will not prefetch.
  * @param timeOut How long to wait for each partition before failing.
- * @tparam T
  */
 class RDDiterator[T: ClassTag](rdd: RDD[T], prefetchPartitions: Int, timeOut: Duration)
   extends Iterator[T] {
