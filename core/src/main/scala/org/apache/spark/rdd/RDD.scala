@@ -656,8 +656,6 @@ abstract class RDD[T: ClassTag](
     sc.runJob(this, (iter: Iterator[T]) => f(iter))
   }
 
-
-
   /**
    * Return an array that contains all of the elements in this RDD.
    */
@@ -677,6 +675,7 @@ abstract class RDD[T: ClassTag](
   def collect[U: ClassTag](f: PartialFunction[T, U]): RDD[U] = {
     filter(f.isDefinedAt).map(f)
   }
+
   /**
    * Return iterator that lazily fetches partitions
    * @param prefetchPartitions How many partitions to prefetch. Larger value increases parallelism
@@ -684,9 +683,9 @@ abstract class RDD[T: ClassTag](
    * @param timeOut how long to wait for each partition fetch
    * @return Iterable of every element in this RDD
    */
-  def toIterator(prefetchPartitions: Int = 1,
-                 timeOut: Duration = Duration(30, TimeUnit.SECONDS)) = {
-    new RDDiterator[T](this, prefetchPartitions, timeOut)
+  def toIterator(prefetchPartitions: Int = 1, partitionBatchSize: Int = 10,
+                 timeOut: Duration = Duration(30, TimeUnit.SECONDS)):Iterator[T] = {
+    new RDDiterator[T](this, prefetchPartitions,partitionBatchSize, timeOut)
   }
 
   /**

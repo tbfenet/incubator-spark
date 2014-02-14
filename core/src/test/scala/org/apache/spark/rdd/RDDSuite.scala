@@ -396,6 +396,18 @@ class RDDSuite extends FunSuite with SharedSparkContext {
     nums = sc.makeRDD(Range(1, 1000), 100)
     assert(nums.toIterator(prefetchPartitions = -1).size === 999)
     assert(nums.toIterator().toArray === (1 to 999).toArray)
+
+    nums = sc.makeRDD(Range(1, 1000), 100)
+    assert(nums.toIterator(prefetchPartitions = 3,partitionBatchSize = 10).size === 999)
+    assert(nums.toIterator().toArray === (1 to 999).toArray)
+
+    nums = sc.makeRDD(Range(1, 1000), 100)
+    assert(nums.toIterator(prefetchPartitions = -1,partitionBatchSize = 0).size === 999)
+    assert(nums.toIterator().toArray === (1 to 999).toArray)
+
+    nums = sc.makeRDD(Range(1, 1000), 100)
+    assert(nums.toIterator(prefetchPartitions = -1).size === 999)
+    assert(nums.toIterator().toArray === (1 to 999).toArray)
   }
 
   test("take") {
