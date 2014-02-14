@@ -679,7 +679,7 @@ abstract class RDD[T: ClassTag](
   /**
    * Return iterator that lazily fetches partitions
    * @param prefetchPartitions How many partitions to prefetch. Larger value increases parallelism
-   *                           but also increases                     driver memory requirement
+   *                           but also increases driver memory requirement.
    * @param partitionBatchSize How many partitions fetch per job
    * @param timeOut how long to wait for each partition fetch
    * @return Iterable of every element in this RDD

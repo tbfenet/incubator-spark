@@ -16,6 +16,8 @@ import org.apache.spark.FutureAction
  * @param rdd RDD to iterate
  * @param prefetchPartitions    The number of partitions to prefetch.
  *                              If <1 will not prefetch.
+ *                              partitions prefetched = min(prefetchPartitions, partitionBatchSize)
+ * @param partitionBatchSize    How many partitions to fetch per job
  * @param timeOut How long to wait for each partition before failing.
  */
 class RDDiterator[T: ClassTag](rdd: RDD[T], prefetchPartitions: Int, partitionBatchSize: Int,
@@ -26,7 +28,7 @@ class RDDiterator[T: ClassTag](rdd: RDD[T], prefetchPartitions: Int, partitionBa
   var partitionsBatches: Iterator[Seq[Int]] = Range(0, rdd.partitions.size).grouped(batchSize)
   var pendingFetchesQueue = mutable.Queue.empty[Future[Seq[Seq[T]]]]
   //add prefetchPartitions prefetch
-  0.until(math.max(1, prefetchPartitions / batchSize)).foreach(x=>enqueueDataFetch())
+  0.until(math.max(0, prefetchPartitions / batchSize)).foreach(x=>enqueueDataFetch())
 
   var currentIterator: Iterator[T] = Iterator.empty
   @tailrec
