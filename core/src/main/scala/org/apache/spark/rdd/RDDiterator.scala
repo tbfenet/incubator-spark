@@ -23,7 +23,6 @@ class RDDiterator[T: ClassTag](rdd: RDD[T], prefetchPartitions: Int, partitionBa
   extends Iterator[T] {
 
   val batchSize = math.max(1,partitionBatchSize)
-
   var partitionsBatches: Iterator[Seq[Int]] = Range(0, rdd.partitions.size).grouped(batchSize)
   var pendingFetchesQueue = mutable.Queue.empty[Future[Seq[Seq[T]]]]
   //add prefetchPartitions prefetch
@@ -60,9 +59,7 @@ class RDDiterator[T: ClassTag](rdd: RDD[T], prefetchPartitions: Int, partitionBa
     if (partitionsBatches.hasNext) {
       pendingFetchesQueue.enqueue(fetchData(partitionsBatches.next(), rdd))
     }
-
   }
-
 }
 
 object RDDiterator {
